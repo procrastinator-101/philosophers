@@ -17,13 +17,14 @@ void    ft_manage_error(int error)
     ft_putstr_fd("ERROR\n", STDERR_FILENO);
     if (error == EIARG)
         ft_putstr_fd("invalid argument\n", STDERR_FILENO);
-    if (error == EMARG)
+    else if (error == EMARG)
         ft_putstr_fd("missing one or more arguments\n", STDERR_FILENO);
-    if (error == EMAF)
+    else if (error == EMAF)
         ft_putstr_fd("memory allocation failure\n", STDERR_FILENO);
-    if (error == ETCF)
+    else if (error == ETCF)
         ft_putstr_fd("thread creation failure\n", STDERR_FILENO);
-    if (error == EMIF)
+    else if (error == EMIF)
         ft_putstr_fd("mutex initialisation failure\n", STDERR_FILENO);
-    exit(EXIT_FAILURE);
+    else if (error == ETAC)
+        ft_putstr_fd("truncated characters\n", STDERR_FILENO);
 }

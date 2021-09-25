@@ -26,6 +26,7 @@
 # define EMAF   3       //ERROR MEMORY ALLOCATION FAILURE
 # define ETCF   4       //ERROR THREAD CREATION FAILURE
 # define EMIF   5       //ERROR MUTEX INITIALISATION FAILURE
+# define ETAC   6       //ERROR TRUNCATED ARGUMENT CHARACTERS
 
 # define MAX_USLEEP 1000000
 
@@ -49,21 +50,32 @@ typedef struct s_philosopher
     t_timeval       last_meal;
 }                   t_philosopher;
 
-typedef struct s_container
+typedef struct s_data
 {
     t_attr          *attr;
     t_philosopher   *philosophers;
     t_timeval       time_begin;
     int             current;
+    pthread_mutex_t key;
     int             isdead;
-}                   t_container;
+}                   t_data;
 
 void    *ft_simulate(void *arg);
 
 void    ft_usleep(useconds_t usec);
 
-void	ft_putstr_fd(char *s, int fd);
+void    ft_attr_print(t_attr *attr);
+int     ft_prepare_simulation(t_data *data);
+
+void    ft_cleanup(t_data *data);
+void    ft_destroy_data(t_data *data);
+void    ft_mutex_nclear(t_data *data, int n);
+t_data *ft_getdata(int argc, char **argv, int *error);
+
 void        ft_manage_error(int error);
+
+void	    ft_putstr_fd(char *s, int fd);
+unsigned    ft_gettimestamp(t_timeval start);
 unsigned    ft_atou_check(const char *str, int *error);
 
 #endif

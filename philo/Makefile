@@ -24,7 +24,13 @@ endif
 NAME = philo
 
 SRC = ft_atou_check.c \
+	  ft_cleanup.c \
+	  ft_destroy_data.c \
+	  ft_getdata.c \
+	  ft_gettimestamp.c \
 	  ft_manage_error.c \
+	  ft_mutex_nclear.c \
+	  ft_prepare_simulation.c \
 	  ft_putstr_fd.c \
 	  ft_simulate.c \
 	  ft_usleep.c \
