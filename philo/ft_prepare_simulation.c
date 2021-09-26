@@ -12,28 +12,34 @@
 
 #include "philo.h"
 
-int ft_prepare_simulation(t_data *data)
+int ft_prepare_simulation(t_data **data, int argc, char **argv)
 {
-    int i;
-    int ret;
+    int     error;
 
-    data->isdead = 0;
-    data->current = 0;
-    ret = pthread_mutex_init(&(data->key), 0);
-    if (ret)
-        return (EMIF);
-    i = -1;
-    while (++i < data->attr->nb_philosophers)
+    if (argc < 5)
+        return (EMARG);
+    if (argc > 6)
+        return (ETAC);
+    *data = ft_getdata(argc, argv, &error);
+    if (error)
     {
-        data->philosophers[i].nb = i;
-        ret = pthread_mutex_init(&(data->philosophers[i].key), 0);
-        if (ret)
-        {
-            pthread_mutex_destroy(&(data->key));
-            ft_mutex_nclear(data, i);
-            return (EMIF);
-        }
+        ft_destroy_data(*data);
+        return (error);
     }
-    gettimeofday(&(data->time_begin), 0);
+    error = ft_initialise_locks(*data);
+    if (error)
+    {
+        ft_destroy_data(*data);
+        return (error);
+    }
+    (*data)->isdead = 0;
+    (*data)->current = 0;
+    gettimeofday(&((*data)->time_begin), 0);
+    //
+    int i;
+    i = -1;
+    while (++i < (*data)->attr->nb_philosophers)
+        (*data)->philosophers[i].last_meal = (*data)->time_begin;
+    //
     return (0);
 }

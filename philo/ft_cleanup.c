@@ -14,7 +14,9 @@
 
 void    ft_cleanup(t_data *data)
 {
-    pthread_mutex_destroy(&(data->key));
-    ft_mutex_nclear(data, data->attr->nb_philosophers);
+    int nb;
+
+    nb = data->attr->nb_philosophers;
+    ft_mutex_clear(data, M1 | M2, nb, nb);
     ft_destroy_data(data);
 }

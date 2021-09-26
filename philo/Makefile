@@ -28,8 +28,9 @@ SRC = ft_atou_check.c \
 	  ft_destroy_data.c \
 	  ft_getdata.c \
 	  ft_gettimestamp.c \
+	  ft_initialise_locks.c \
 	  ft_manage_error.c \
-	  ft_mutex_nclear.c \
+	  ft_mutex_clear.c \
 	  ft_prepare_simulation.c \
 	  ft_putstr_fd.c \
 	  ft_simulate.c \

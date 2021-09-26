@@ -30,6 +30,9 @@
 
 # define MAX_USLEEP 1000000
 
+# define M1 0X1
+# define M2 0X10
+
 typedef struct timeval t_timeval;
 
 
@@ -44,9 +47,11 @@ typedef struct s_attr
 
 typedef struct s_philosopher
 {
-    unsigned        nb;
+    int             iseating;
+    unsigned        nb;//useless
     pthread_t       id;
-    pthread_mutex_t key;
+    pthread_mutex_t lock;
+    pthread_mutex_t status_lock;
     t_timeval       last_meal;
 }                   t_philosopher;
 
@@ -57,23 +62,32 @@ typedef struct s_data
     t_timeval       time_begin;
     int             current;
     pthread_mutex_t key;
+    pthread_mutex_t display_key;
     int             isdead;
 }                   t_data;
 
-void    *ft_simulate(void *arg);
+void        *ft_simulate(void *arg);
 
-void    ft_usleep(useconds_t usec);
 
-void    ft_attr_print(t_attr *attr);
-int     ft_prepare_simulation(t_data *data);
+void        ft_attr_print(t_attr *attr);
+void        ft_status_print(t_data *data, int nb, t_timeval start, char *action);
 
-void    ft_cleanup(t_data *data);
-void    ft_destroy_data(t_data *data);
-void    ft_mutex_nclear(t_data *data, int n);
-t_data *ft_getdata(int argc, char **argv, int *error);
+int         ft_prepare_simulation(t_data **data, int argc, char **argv);
+t_data      *ft_getdata(int argc, char **argv, int *error);
+
+
+
+void        ft_cleanup(t_data *data);
+void        ft_destroy_data(t_data *data);
+
+
+void        ft_mutex_clear(t_data *data, unsigned major, int locks, int status_locks);
+
+int         ft_initialise_locks(t_data *data);
 
 void        ft_manage_error(int error);
 
+void        ft_usleep(useconds_t usec);
 void	    ft_putstr_fd(char *s, int fd);
 unsigned    ft_gettimestamp(t_timeval start);
 unsigned    ft_atou_check(const char *str, int *error);

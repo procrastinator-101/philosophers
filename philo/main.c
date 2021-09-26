@@ -42,43 +42,47 @@ void    ft_start_simulation(t_data *data)
     }
 }
 
+void    ft_supervise(t_data *data)
+{
+    int i;
+    int nb;
+
+    nb = 0;
+    while (!data->isdead)
+    {
+        i = -1;
+        while (++i < data->attr->nb_philosophers && !data->isdead)
+        {
+            pthread_mutex_lock(&(data->philosophers[i].status_lock));
+            if (!data->philosophers[i].iseating && ft_gettimestamp(data->philosophers[i].last_meal) >= data->attr->time_to_die)
+            {
+                data->isdead = 1;
+                nb = i;
+            }
+            pthread_mutex_unlock(&(data->philosophers[i].status_lock));
+        }
+    }
+    ft_status_print(data, nb, data->time_begin, "\t\t\t\t\tdied");
+}
+
 int main(int argc, char **argv)
 {
     int     i;
     int     error;
     t_data  *data;
 
-    if (argc < 5)
-        ft_manage_error(EMARG);
-    if (argc > 6)
-        ft_manage_error(ETAC);
-    if (argc < 5 || argc > 6)
-        return (1);
-    data = ft_getdata(argc, argv, &error);
+    error = ft_prepare_simulation(&data, argc, argv);
     if (error)
     {
-        ft_destroy_data(data);
-        ft_manage_error(error);
-        return (1);
-    }
-    error = ft_prepare_simulation(data);
-    if (error)
-    {
-        ft_destroy_data(data);
         ft_manage_error(error);
         return (1);
     }
     //clean until here
     ft_start_simulation(data);
+    ft_supervise(data);
     i = -1;
     while (++i < data->attr->nb_philosophers)
-    {
-        error = pthread_join(data->philosophers[i].id, 0);
-        /*
-        if (!error)
-            break ;
-        */
-    }
+        pthread_join(data->philosophers[i].id, 0);
     ft_cleanup(data);
     return (0);
 }
