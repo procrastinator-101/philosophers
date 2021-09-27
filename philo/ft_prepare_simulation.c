@@ -33,13 +33,6 @@ int ft_prepare_simulation(t_data **data, int argc, char **argv)
         return (error);
     }
     (*data)->isdead = 0;
-    (*data)->current = 0;
-    gettimeofday(&((*data)->time_begin), 0);
-    //
-    int i;
-    i = -1;
-    while (++i < (*data)->attr->nb_philosophers)
-        (*data)->philosophers[i].last_meal = (*data)->time_begin;
-    //
+    (*data)->count = 0;
     return (0);
 }

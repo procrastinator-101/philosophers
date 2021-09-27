@@ -34,6 +34,7 @@ SRC = ft_atou_check.c \
 	  ft_prepare_simulation.c \
 	  ft_putstr_fd.c \
 	  ft_simulate.c \
+	  ft_strcmp.c \
 	  ft_usleep.c \
 	  main.c
 

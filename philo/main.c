@@ -28,41 +28,75 @@ void    ft_philosopher_print(t_philosopher *philosopher)
     printf("time since last meal = %u\n", ft_gettimestamp(philosopher->last_meal));
 }
 
-void    ft_start_simulation(t_data *data)
+static void ft_destroy_nthread(t_data *data, int n)
+{
+    int i;
+
+    data->isdead = 1;
+    i = -1;
+    while (++i < n)
+        pthread_join(data->philosophers[i].id, 0);
+}
+
+int    ft_start_simulation(t_data *data)
 {
     int i;
     int ret;
 
+    pthread_mutex_lock(&(data->launch_lock));
     i = -1;
     while (++i < data->attr->nb_philosophers)
     {
-        ret = pthread_create(&(data->philosophers[i].id), 0, ft_simulate, data);
+        ret = pthread_create(&(data->philosophers[i].id), 0, ft_simulate, data->philosophers + i);
         if (ret)
-            ft_manage_error(ETCF);
+        {
+            ft_destroy_nthread(data, i);
+            return (ETCF);
+        }
     }
+    ret = 1;
+    while (ret)
+    {
+        ft_usleep(1000);
+        pthread_mutex_lock(&(data->lock));
+        if (data->count == data->attr->nb_philosophers)
+            ret = 0;
+        pthread_mutex_unlock(&(data->lock));
+    }
+    //printf("count = %d\n", data->count);
+    gettimeofday(&(data->time_begin), 0);
+    pthread_mutex_unlock(&(data->launch_lock));
+    return (0);
 }
 
 void    ft_supervise(t_data *data)
 {
     int i;
-    int nb;
+    int isfull;
 
-    nb = 0;
-    while (!data->isdead)
+    isfull = 0;
+    while (!data->isdead && !isfull)
     {
         i = -1;
+        isfull = 1;
         while (++i < data->attr->nb_philosophers && !data->isdead)
         {
             pthread_mutex_lock(&(data->philosophers[i].status_lock));
-            if (!data->philosophers[i].iseating && ft_gettimestamp(data->philosophers[i].last_meal) >= data->attr->time_to_die)
+            if (data->attr->nb_meals < 0 || data->philosophers[i].nb_meals < data->attr->nb_meals)
             {
-                data->isdead = 1;
-                nb = i;
+                if (!data->philosophers[i].iseating && ft_gettimestamp(data->philosophers[i].last_meal) >= data->attr->time_to_die)
+                {
+                    //data->isdead = 1;
+                    pthread_mutex_unlock(&(data->philosophers[i].status_lock));
+                    ft_status_print(data, i, data->time_begin, DIED);
+                    pthread_mutex_lock(&(data->philosophers[i].status_lock));
+                }
+                else
+                    isfull = 0;
             }
             pthread_mutex_unlock(&(data->philosophers[i].status_lock));
         }
     }
-    ft_status_print(data, nb, data->time_begin, "\t\t\t\t\tdied");
 }
 
 int main(int argc, char **argv)

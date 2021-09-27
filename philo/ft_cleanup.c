@@ -17,6 +17,6 @@ void    ft_cleanup(t_data *data)
     int nb;
 
     nb = data->attr->nb_philosophers;
-    ft_mutex_clear(data, M1 | M2, nb, nb);
+    ft_mutex_clear(data, 1, nb, nb);
     ft_destroy_data(data);
 }

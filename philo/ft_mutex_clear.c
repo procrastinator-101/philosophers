@@ -12,14 +12,16 @@
 
 #include "philo.h"
 
-void    ft_mutex_clear(t_data *data, unsigned major, int locks, int status_locks)
+void    ft_mutex_clear(t_data *data, int major, int locks, int status_locks)
 {
     int i;
     
-    if (major & M1)
-        pthread_mutex_destroy(&(data->key));
-    if (major & M2)
-        pthread_mutex_destroy(&(data->display_key));
+    if (major)
+    {
+        pthread_mutex_destroy(&(data->lock));
+        pthread_mutex_destroy(&(data->display_lock));
+        pthread_mutex_destroy(&(data->launch_lock));
+    }
     i = -1;
     while (++i < locks)
         pthread_mutex_destroy(&(data->philosophers[i].lock));

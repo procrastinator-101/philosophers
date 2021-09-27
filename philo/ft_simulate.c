@@ -14,62 +14,77 @@
 
 void    ft_status_print(t_data *data, int nb, t_timeval start, char *action)
 {
-    pthread_mutex_lock(&(data->display_key));
-    printf("%u  philosopher %d  %s\n", ft_gettimestamp(start), nb + 1, action);
-    pthread_mutex_unlock(&(data->display_key));
+    pthread_mutex_lock(&(data->display_lock));
+    if (!data->isdead)
+        printf("%u  philosopher %d  %s\n", ft_gettimestamp(start), nb + 1, action);
+    if (!ft_strcmp(action, DIED))
+        data->isdead = 1;
+    pthread_mutex_unlock(&(data->display_lock));
 }
 
-static int  ft_getpartner(int nb, int nb_philosophers)
+static int  ft_getpartner(t_data *data, int nb)
 {
-    //more efficient
-    //return ((nb + 1) % nb_philosophers);
-    if (nb % 2)
-        return (nb - 1);
-    if (nb < nb_philosophers - 1)
-        return (nb + 1);
-    return (0);
+    if (data->attr->nb_philosophers == 1)
+        ft_status_print(data, nb, data->time_begin, DIED);
+    return ((nb + 1) % data->attr->nb_philosophers);
 }
 
-static void ft_eat(t_data *data, int nb, int partner)
+static int  ft_take_forks(t_data *data, int nb, int partner)
 {
-    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
-    data->philosophers[nb].iseating = 1;
-    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
-    ft_status_print(data, nb, data->time_begin, "has taken a fork");
-    ft_status_print(data, nb, data->time_begin, "is eating");
-    usleep(data->attr->time_to_eat * 1000);
-    pthread_mutex_unlock(&(data->philosophers[nb].lock));
-    pthread_mutex_unlock(&(data->philosophers[partner].lock));
-    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
-    data->philosophers[nb].iseating = 0;
-    gettimeofday(&(data->philosophers[nb].last_meal), 0);
-    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
-}
-
-static int  ft_dine(t_data *data, int nb, int partner)
-{
-    //possible deadlock
     pthread_mutex_lock(&(data->philosophers[nb].lock));
+    if (data->isdead)
+    {   
+        pthread_mutex_unlock(&(data->philosophers[nb].lock));
+        return (0);
+    }
+    ft_status_print(data, nb, data->time_begin, "has taken a fork");
     pthread_mutex_lock(&(data->philosophers[partner].lock));
     if (data->isdead)
     {   
         pthread_mutex_unlock(&(data->philosophers[nb].lock));
         pthread_mutex_unlock(&(data->philosophers[partner].lock));
-        return (1);
+        return (0);
     }
-    ft_eat(data, nb, partner);
-    if (data->isdead)
-        return (1);
-    ft_status_print(data, nb, data->time_begin, "is sleeping");
-    usleep(data->attr->time_to_sleep * 1000);
-    ft_status_print(data, nb, data->time_begin, "is thinking");
-    return (0);
+    ft_status_print(data, nb, data->time_begin, "has taken a fork");
+    return (1);
 }
 
+static void ft_eat(t_data *data, int nb, int partner)
+{
+    if (!ft_take_forks(data, nb, partner))
+        return ;
+    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
+    data->philosophers[nb].iseating = 1;
+    gettimeofday(&(data->philosophers[nb].last_meal), 0);
+    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+    ft_status_print(data, nb, data->time_begin, "is eating");
+    ft_usleep(data->attr->time_to_eat * 1000);
+    pthread_mutex_unlock(&(data->philosophers[nb].lock));
+    pthread_mutex_unlock(&(data->philosophers[partner].lock));
+    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
+    data->philosophers[nb].iseating = 0;
+    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+}
 
-/*
-** all threads should start executing at the same time; then pair numbered philos will sleep for 50ms to let others take advantage
-*/
+static void  ft_dine(t_data *data, int nb, int partner)
+{
+    while (!data->isdead)
+    {
+        ft_eat(data, nb, partner);
+        if (data->isdead)
+            return ;
+        ft_status_print(data, nb, data->time_begin, "is sleeping");
+        ft_usleep(data->attr->time_to_sleep * 1000);
+        if (data->isdead)
+            return ;
+        ft_status_print(data, nb, data->time_begin, "is thinking");
+        pthread_mutex_lock(&(data->philosophers[nb].status_lock));
+        data->philosophers[nb].nb_meals++;
+        pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+        if (data->attr->nb_meals >= 0 && data->philosophers[nb].nb_meals >= data->attr->nb_meals)
+            return ;
+    }
+}
 
 void    *ft_simulate(void *arg)
 {
@@ -77,22 +92,21 @@ void    *ft_simulate(void *arg)
     int         partner;
     t_data      *data;
 
-    data = (t_data *)arg;
-    pthread_mutex_lock(&(data->key));
-    nb = data->current++;
-    pthread_mutex_unlock(&(data->key));
-    partner = ft_getpartner(nb, data->attr->nb_philosophers);
-    if (partner == nb)
-    {
-        data->isdead = 1;
-        return (0);
-    }
+    data = ((t_philosopher *)arg)->data;
+    pthread_mutex_lock(&(data->lock));
+    data->count++;
+    pthread_mutex_unlock(&(data->lock));
+    pthread_mutex_lock(&(data->launch_lock));
+    pthread_mutex_unlock(&(data->launch_lock));
+    nb = ((t_philosopher *)arg)->nb;
+    partner = ft_getpartner(data, nb);
+    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
+    data->philosophers[nb].iseating = 0;
     gettimeofday(&(data->philosophers[nb].last_meal), 0);
-    while (!data->isdead)
-    {
-        if (ft_dine(data, nb, partner))
-            break ;
-    }
-    ft_status_print(data, nb, data->time_begin, "\t\t\t\t\tleft");
+    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+    if (nb % 2)
+        ft_usleep(SETUP_TIME);
+    ft_dine(data, nb, partner);
+    //ft_status_print(data, nb, data->time_begin, "\t\t\t\t\tleft");
     return (0);
 }

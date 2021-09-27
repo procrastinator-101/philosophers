@@ -23,7 +23,7 @@ static int  ft_initialise_status_locks(t_data *data)
         ret = pthread_mutex_init(&(data->philosophers[i].status_lock), 0);
         if (ret)
         {
-            ft_mutex_clear(data, M1 | M2, data->attr->nb_philosophers, i);
+            ft_mutex_clear(data, 1, data->attr->nb_philosophers, i);
             return (EMIF);
         }
     }
@@ -39,11 +39,13 @@ static int  ft_initialise_philosopher_locks(t_data *data)
     while (++i < data->attr->nb_philosophers)
     {
         data->philosophers[i].nb = i;
-        data->philosophers[i].iseating = 0;
+        data->philosophers[i].data = data;
+        data->philosophers[i].iseating = 1;
+        data->philosophers[i].nb_meals = 0;
         ret = pthread_mutex_init(&(data->philosophers[i].lock), 0);
         if (ret)
         {
-            ft_mutex_clear(data, M1 | M2, i, 0);
+            ft_mutex_clear(data, 1, i, 0);
             return (EMIF);
         }
     }
@@ -54,13 +56,20 @@ int ft_initialise_locks(t_data *data)
 {
     int ret;
 
-    ret = pthread_mutex_init(&(data->key), 0);
+    ret = pthread_mutex_init(&(data->lock), 0);
     if (ret)
         return (EMIF);
-    ret = pthread_mutex_init(&(data->display_key), 0);
+    ret = pthread_mutex_init(&(data->display_lock), 0);
     if (ret)
     {
-        pthread_mutex_destroy(&(data->key));
+        pthread_mutex_destroy(&(data->lock));
+        return (EMIF);
+    }
+    ret = pthread_mutex_init(&(data->launch_lock), 0);
+    if (ret)
+    {
+        pthread_mutex_destroy(&(data->lock));
+        pthread_mutex_destroy(&(data->display_lock));
         return (EMIF);
     }
     return (ft_initialise_philosopher_locks(data));

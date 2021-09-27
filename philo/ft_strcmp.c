@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_usleep.c                                        :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/21 19:45:40 by youness           #+#    #+#             */
-/*   Updated: 2021/09/21 19:45:42 by youness          ###   ########.fr       */
+/*   Created: 2021/09/27 20:42:56 by youness           #+#    #+#             */
+/*   Updated: 2021/09/27 20:42:58 by youness          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    ft_usleep(useconds_t usec)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-    while (usec > MAX_USLEEP - 1)
-    {
-        usleep(MAX_USLEEP - 1);
-        usec -= MAX_USLEEP - 1;
-    }
-    usleep(usec);
+	int	i;
+
+	i = 0;
+	while (s1[i] && s1[i] == s2[i])
+		i++;
+	return (s1[i] - s2[i]);
 }
