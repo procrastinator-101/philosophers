@@ -12,16 +12,6 @@
 
 #include "philo.h"
 
-void    ft_status_print(t_data *data, int nb, t_timeval start, char *action)
-{
-    pthread_mutex_lock(&(data->display_lock));
-    if (!data->isdead)
-        printf("%u  philosopher %d  %s\n", ft_gettimestamp(start), nb + 1, action);
-    if (!ft_strcmp(action, DIED))
-        data->isdead = 1;
-    pthread_mutex_unlock(&(data->display_lock));
-}
-
 static int  ft_getpartner(t_data *data, int nb)
 {
     if (data->attr->nb_philosophers == 1)
@@ -63,6 +53,7 @@ static void ft_eat(t_data *data, int nb, int partner)
     pthread_mutex_unlock(&(data->philosophers[partner].lock));
     pthread_mutex_lock(&(data->philosophers[nb].status_lock));
     data->philosophers[nb].iseating = 0;
+    data->philosophers[nb].nb_meals++;
     pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
 }
 
@@ -70,6 +61,8 @@ static void  ft_dine(t_data *data, int nb, int partner)
 {
     while (!data->isdead)
     {
+        if (data->attr->nb_meals >= 0 && data->philosophers[nb].nb_meals >= data->attr->nb_meals)
+            return ;
         ft_eat(data, nb, partner);
         if (data->isdead)
             return ;
@@ -78,11 +71,6 @@ static void  ft_dine(t_data *data, int nb, int partner)
         if (data->isdead)
             return ;
         ft_status_print(data, nb, data->time_begin, "is thinking");
-        pthread_mutex_lock(&(data->philosophers[nb].status_lock));
-        data->philosophers[nb].nb_meals++;
-        pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
-        if (data->attr->nb_meals >= 0 && data->philosophers[nb].nb_meals >= data->attr->nb_meals)
-            return ;
     }
 }
 
@@ -107,6 +95,5 @@ void    *ft_simulate(void *arg)
     if (nb % 2)
         ft_usleep(SETUP_TIME);
     ft_dine(data, nb, partner);
-    //ft_status_print(data, nb, data->time_begin, "\t\t\t\t\tleft");
     return (0);
 }

@@ -74,24 +74,23 @@ typedef struct s_data
     int             count;
 }                   t_data;
 
-void        *ft_simulate(void *arg);
-
-
 void        ft_attr_print(t_attr *attr);
 void        ft_status_print(t_data *data, int nb, t_timeval start, char *action);
 
-int         ft_prepare_simulation(t_data **data, int argc, char **argv);
 t_data      *ft_getdata(int argc, char **argv, int *error);
 
+int         ft_initialise_locks(t_data *data);
 
+int         ft_launch_simulation(t_data *data);
+int         ft_prepare_simulation(t_data **data, int argc, char **argv);
+
+void        *ft_simulate(void *arg);
+void        ft_supervise_simulation(t_data *data);
 
 void        ft_cleanup(t_data *data);
 void        ft_destroy_data(t_data *data);
 
-
 void        ft_mutex_clear(t_data *data, int major, int locks, int status_locks);
-
-int         ft_initialise_locks(t_data *data);
 
 void        ft_manage_error(int error);
 
