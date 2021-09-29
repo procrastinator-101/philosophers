@@ -14,7 +14,7 @@
 
 void    ft_status_print(t_data *data, int nb, t_timeval start, char *action)
 {
-    pthread_mutex_lock(&(data->display_lock));
+    sem_wait(data->display_lock.key);
     printf("%u  philosopher %d  %s\n", ft_gettimestamp(start), nb + 1, action);
-    pthread_mutex_unlock(&(data->display_lock));
+    sem_post(data->display_lock.key);
 }

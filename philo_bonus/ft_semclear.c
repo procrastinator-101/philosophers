@@ -1,20 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_status_print.c                                  :+:      :+:    :+:   */
+/*   ft_semclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/28 15:16:12 by youness           #+#    #+#             */
-/*   Updated: 2021/09/28 15:16:13 by youness          ###   ########.fr       */
+/*   Created: 2021/09/29 22:24:02 by youness           #+#    #+#             */
+/*   Updated: 2021/09/29 22:24:04 by youness          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    ft_status_print(t_data *data, int nb, t_timeval start, char *action)
+void    ft_semclear(t_data *data, int major, int locks, int status_locks)
 {
-    pthread_mutex_lock(&(data->display_lock));
-    printf("%u  philosopher %d  %s\n", ft_gettimestamp(start), nb + 1, action);
-    pthread_mutex_unlock(&(data->display_lock));
+    int i;
+    
+    if (major)
+    {
+       ft_semdel(&(data->lock));
+       ft_semdel(&(data->display_lock));
+    }
+    i = -1;
+    while (++i < locks)
+        ft_semdel(&(data->philosophers[i].lock));
+    i = -1;
+    while (++i < status_locks)
+        ft_semdel(&(data->philosophers[i].status_lock));
 }

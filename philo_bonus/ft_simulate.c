@@ -26,26 +26,9 @@ static int  ft_getpartner(t_data *data, int nb)
 
 static int  ft_take_forks(t_data *data, int nb, int partner)
 {
-    pthread_mutex_lock(&(data->philosophers[nb].lock));
-    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
-    if (data->isdead)
-    {   
-        pthread_mutex_unlock(&(data->philosophers[nb].lock));
-        pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
-        return (0);
-    }
-    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+    sem_wait(data->philosophers[nb].lock);
     ft_status_print(data, nb, data->time_begin, "has taken a fork");
-    pthread_mutex_lock(&(data->philosophers[partner].lock));
-    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
-    if (data->isdead)
-    {   
-        pthread_mutex_unlock(&(data->philosophers[nb].lock));
-        pthread_mutex_unlock(&(data->philosophers[partner].lock));
-        pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
-        return (0);
-    }
-    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+    sem_wait(data->philosophers[partner].lock);
     ft_status_print(data, nb, data->time_begin, "has taken a fork");
     return (1);
 }

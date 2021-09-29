@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_status_print.c                                  :+:      :+:    :+:   */
+/*   ft_gettimestamp.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/28 15:16:12 by youness           #+#    #+#             */
-/*   Updated: 2021/09/28 15:16:13 by youness          ###   ########.fr       */
+/*   Created: 2021/09/25 22:52:43 by youness           #+#    #+#             */
+/*   Updated: 2021/09/25 22:52:45 by youness          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    ft_status_print(t_data *data, int nb, t_timeval start, char *action)
+unsigned    ft_gettimestamp(t_timeval start)
 {
-    pthread_mutex_lock(&(data->display_lock));
-    printf("%u  philosopher %d  %s\n", ft_gettimestamp(start), nb + 1, action);
-    pthread_mutex_unlock(&(data->display_lock));
+    t_timeval           now;
+    unsigned long long  timestamp;
+
+    gettimeofday(&now, 0);
+    timestamp = (now.tv_sec - start.tv_sec) * 1000000;
+    timestamp = timestamp + now.tv_usec - start.tv_usec;
+    return (timestamp / 1000);
 }
