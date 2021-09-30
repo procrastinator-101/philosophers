@@ -12,37 +12,47 @@
 
 #include "philo.h"
 
-void    ft_supervise_simulation(t_data *data)
+static void ft_update_child_status(t_data *data, int pid)
 {
     int i;
-    int isfull;
 
-    isfull = 0;
-    while (!isfull)
+    i = -1;
+    while (++i < data->attr->nb_philosophers)
     {
-        i = -1;
-        isfull = 1;
-        while (++i < data->attr->nb_philosophers)
+        if (pid == data->philosophers[i].pid)
         {
-            pthread_mutex_lock(&(data->philosophers[i].status_lock));
-            if (data->isdead)
-            {
-                pthread_mutex_unlock(&(data->philosophers[i].status_lock));
-                return ;
-            }
-            if (data->attr->nb_meals < 0 || data->philosophers[i].nb_meals < data->attr->nb_meals)
-            {
-                if (!data->philosophers[i].iseating && ft_gettimestamp(data->philosophers[i].last_meal) >= data->attr->time_to_die)
-                {
-                    data->isdead = 1;
-                    pthread_mutex_unlock(&(data->philosophers[i].status_lock));
-                    ft_status_print(data, i, data->time_begin, DIED);
-                    return ;
-                }
-                else
-                    isfull = 0;
-            }
-            pthread_mutex_unlock(&(data->philosophers[i].status_lock));
+            data->philosophers[i].alive = 0;
+            return ;
         }
     }
+}
+
+void    ft_supervise_simulation(t_data *data)
+{
+    int ret;
+    int pid;
+    int alive;
+    int status;
+
+    alive = data->attr->nb_philosophers;
+    while (alive-- > 0)
+    {
+        pid = waitpid(-1, &status, 0);
+        ft_update_child_status(data, pid);//pid = -1 -> foreign
+        if (WIFEXITED(status))
+        {
+            ret =  WEXITSTATUS(status);
+            if (ret == END_DEAD || ret == END_ERROR)
+            {
+                ft_kill_alive_childs(data, pid);
+                break ;
+            }
+        }
+        else if (WIFSIGNALED(status))
+        {
+            ft_kill_alive_childs(data, pid);
+            break ;
+        }
+    }
+    ft_cleanup(data);
 }

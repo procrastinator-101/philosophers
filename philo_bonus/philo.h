@@ -20,8 +20,9 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-# include <sys/types.h>
 # include <signal.h>
+# include <sys/wait.h>
+# include <sys/types.h>
 
 # include <fcntl.h>
 # include <sys/stat.h>
@@ -44,6 +45,10 @@
 # define M3 0X100
 */
 
+# define END_FULL   0
+# define END_DEAD   1
+# define END_ERROR  2
+
 # define DIED   "\t\t\t\t\tdied"
 
 typedef struct timeval t_timeval;
@@ -65,24 +70,25 @@ typedef struct s_semaphore
 
 typedef struct s_philosopher
 {
-    int             pid;
     int             nb;
+    int             pid;
+    int             alive;
     int             iseating;
     int             nb_meals;
-    t_semaphore     lock;
-    t_semaphore     status_lock;
+    pthread_t       tid;
     void            *data;
     t_timeval       last_meal;
+    t_semaphore     lock;
+    t_semaphore     status_lock;
 }                   t_philosopher;
 
 typedef struct s_data
 {
+    t_timeval       time_begin;
     t_semaphore     lock;
     t_semaphore     display_lock;
     t_attr          *attr;
     t_philosopher   *philosophers;
-    t_timeval       time_begin;
-    int             isdead;
 }                   t_data;
 
 void        ft_attr_print(t_attr *attr);
@@ -96,7 +102,6 @@ int         ft_launch_simulation(t_data *data);
 int         ft_prepare_simulation(t_data **data, int argc, char **argv);
 
 void        *ft_simulate(void *arg);
-void        ft_supervise_simulation(t_data *data);
 
 void        ft_cleanup(t_data *data);
 void        ft_destroy_data(t_data *data);
@@ -114,6 +119,8 @@ void        ft_mutex_clear(t_data *data, int major, int locks, int status_locks)
 void    ft_semdel(t_semaphore *semaphore);
 void    ft_semclear(t_data *data, int major, int locks, int status_locks);
 int     ft_semcreate(t_semaphore *semaphore, char *type, int id, int value);
+
+void    ft_supervise_philosopher(t_data *data, int nb);
 
 /*-----------------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------------*/
