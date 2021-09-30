@@ -73,13 +73,13 @@ typedef struct s_philosopher
     t_semaphore             lock;
     t_semaphore             status_lock;
     t_timeval               last_meal;
-    t_timeval               time_begin;
     struct s_philosopher    *partner;
 }                           t_philosopher;
 
 typedef struct s_data
 {
     t_attr                  attr;
+    t_timeval               time_begin;
     t_semaphore             lock;
     t_semaphore             display_lock;
     t_philosopher           **philosophers;

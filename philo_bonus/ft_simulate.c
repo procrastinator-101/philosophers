@@ -12,24 +12,15 @@
 
 #include "philo.h"
 
-static int  ft_getpartner(t_data *data, int nb)
+static int  ft_take_forks(t_philosopher *philosopher)
 {
-    if (data->attr->nb_philosophers == 1)
-    {
-        pthread_mutex_lock(&(data->philosophers[nb].status_lock));
-        data->isdead = 1;
-        pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
-        ft_status_print(data, nb, data->time_begin, DIED);
-    }
-    return ((nb + 1) % data->attr->nb_philosophers);
-}
+    t_data  *data;
 
-static int  ft_take_forks(t_data *data, int nb, int partner)
-{
-    sem_wait(data->philosophers[nb].lock);
-    ft_status_print(data, nb, data->time_begin, "has taken a fork");
-    sem_wait(data->philosophers[partner].lock);
-    ft_status_print(data, nb, data->time_begin, "has taken a fork");
+    data = philosopher->data;
+    sem_wait(philosopher->lock.key);
+    ft_status_print(data,philosopher->nb, data->time_begin, "has taken a fork");
+    sem_wait(philosopher->partner->lock.key);
+    ft_status_print(data,philosopher->nb, data->time_begin, "has taken a fork");
     return (1);
 }
 
@@ -73,24 +64,14 @@ static void  ft_dine(t_data *data, int nb, int partner)
 
 void    *ft_simulate(void *arg)
 {
-    int         nb;
-    int         partner;
-    t_data      *data;
-
-    data = ((t_philosopher *)arg)->data;
-    pthread_mutex_lock(&(data->lock));
-    data->count++;
-    pthread_mutex_unlock(&(data->lock));
-    pthread_mutex_lock(&(data->launch_lock));
-    pthread_mutex_unlock(&(data->launch_lock));
-    nb = ((t_philosopher *)arg)->nb;
-    partner = ft_getpartner(data, nb);
-    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
-    data->philosophers[nb].iseating = 0;
-    gettimeofday(&(data->philosophers[nb].last_meal), 0);
-    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
-    if (nb % 2)
+    t_philosopher   *philosopher;
+    
+    sem_wait(philosopher->status_lock.key);
+    philosopher->iseating = 0;
+    gettimeofday(&(philosopher->last_meal), 0);
+    sem_post(philosopher->status_lock.key);
+    if (philosopher->nb % 2)
         ft_usleep(SETUP_TIME);
-    ft_dine(data, nb, partner);
+    ft_dine(philosopher);
     return (0);
 }

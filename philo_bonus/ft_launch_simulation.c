@@ -47,6 +47,7 @@ static int  ft_create_childs(t_data *data, int nb)
         return (0);
     philosopher = data->philosophers[nb];
     partner = (nb + 1) % data->attr.nb_philosophers;
+    //check if there is only one philosopher
     philosopher->partner = data->philosophers[partner];
     ft_clean_unecessary_data(data, partner);
     return (0);

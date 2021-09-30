@@ -31,7 +31,7 @@ int main(int argc, char **argv)
         ft_manage_error(error);
         return (EXIT_FAILURE);
     }
-    ft_semclear(data, 1,  data->attr->nb_philosophers,  data->attr->nb_philosophers);
+    ft_semclear(data, 1,  data->attr.nb_philosophers,  data->attr.nb_philosophers);
     
     return (EXIT_SUCCESS);
 }
