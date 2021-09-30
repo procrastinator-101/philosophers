@@ -18,18 +18,37 @@ static void ft_destroy_nprocess(t_data *data, int n)
 
     i = -1;
     while (++i < n)
-        kill(data->philosophers[i].pid, SIGKILL);
+        kill(data->philosophers[i]->pid, SIGKILL);
 }
 
-static int  ft_create_childs(t_data *data, int idx)
+static void ft_clean_foreign_philos(t_data *data, int nb, int partner)
 {
-    data->philosophers[idx].pid = fork();
-    if (data->philosophers[idx].pid == -1)
+    int i;
+
+    i = -1;
+    while (++i < data->attr.nb_philosophers)
+    {
+        if (i == nb || i == partner)
+            continue ;
+        ft_philosopher_del(data->philosophers[i]);
+    }
+    free(data->philosophers);
+}
+
+static int  ft_create_childs(t_data *data, int nb)
+{
+    int             partner;
+    t_philosopher   *philosopher;
+
+    data->philosophers[nb]->pid = fork();
+    if (data->philosophers[nb]->pid == -1)
         return (EPCF);
-    if (data->philosophers[idx].pid)
+    if (data->philosophers[nb]->pid)
         return (0);
-    ft_clean_unecessary_data
-    ft_simulate(data);
+    philosopher = data->philosophers[nb];
+    partner = (nb + 1) % data->attr.nb_philosophers;
+    philosopher->partner = data->philosophers[partner];
+    ft_clean_unecessary_data(data, partner);
     return (0);
 }
 
@@ -39,7 +58,7 @@ int    ft_launch_simulation(t_data *data)
    int  ret;
 
    i = -1;
-   while (++i < data->attr->nb_philosophers)
+   while (++i < data->attr.nb_philosophers)
    {
        ret = ft_create_childs(data, i);
        if (ret)

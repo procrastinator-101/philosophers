@@ -50,40 +50,40 @@ typedef struct timeval t_timeval;
 
 typedef struct s_attr
 {
-    int         nb_philosophers;
-    unsigned    time_to_die;
-    unsigned    time_to_eat;
-    unsigned    time_to_sleep;
-    int         nb_meals;
-}               t_attr;
+    int                     nb_philosophers;
+    unsigned                time_to_die;
+    unsigned                time_to_eat;
+    unsigned                time_to_sleep;
+    int                     nb_meals;
+}                           t_attr;
 
 typedef struct s_semaphore
 {
-    char    *name;
-    sem_t   *key;
-}               t_semaphore;
+    char                    *name;
+    sem_t                   *key;
+}                           t_semaphore;
 
 typedef struct s_philosopher
 {
-    int             pid;
-    int             nb;
-    int             iseating;
-    int             nb_meals;
-    t_semaphore     lock;
-    t_semaphore     status_lock;
-    void            *data;
-    t_timeval       last_meal;
-}                   t_philosopher;
+    int                     nb;
+    int                     pid;
+    int                     iseating;
+    int                     nb_meals;
+    void                    *data;
+    t_semaphore             lock;
+    t_semaphore             status_lock;
+    t_timeval               last_meal;
+    t_timeval               time_begin;
+    struct s_philosopher    *partner;
+}                           t_philosopher;
 
 typedef struct s_data
 {
-    t_semaphore     lock;
-    t_semaphore     display_lock;
-    t_attr          *attr;
-    t_philosopher   *philosophers;
-    t_timeval       time_begin;
-    int             isdead;
-}                   t_data;
+    t_attr                  attr;
+    t_semaphore             lock;
+    t_semaphore             display_lock;
+    t_philosopher           **philosophers;
+}                           t_data;
 
 void        ft_attr_print(t_attr *attr);
 void        ft_status_print(t_data *data, int nb, t_timeval start, char *action);
@@ -114,6 +114,10 @@ void        ft_mutex_clear(t_data *data, int major, int locks, int status_locks)
 void    ft_semdel(t_semaphore *semaphore);
 void    ft_semclear(t_data *data, int major, int locks, int status_locks);
 int     ft_semcreate(t_semaphore *semaphore, char *type, int id, int value);
+
+void    ft_philosopher_del(t_philosopher *philosopher);
+void    ft_philosopher_nclear(t_philosopher **philosophers, int n);
+t_philosopher   *ft_philosopher_create(int nb, t_data *data, int *error);
 
 /*-----------------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------------*/

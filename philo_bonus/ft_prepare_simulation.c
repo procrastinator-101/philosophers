@@ -23,15 +23,8 @@ int ft_prepare_simulation(t_data **data, int argc, char **argv)
     *data = ft_getdata(argc, argv, &error);
     if (error)
     {
-        ft_destroy_data(*data);
+        free(*data);
         return (error);
     }
-    error = ft_initialise_locks(*data);
-    if (error)
-    {
-        ft_destroy_data(*data);
-        return (error);
-    }
-    (*data)->isdead = 0;
     return (0);
 }

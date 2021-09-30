@@ -39,6 +39,27 @@ static int ft_getattr(t_attr *attr,  int argc, char **argv)
     return (0);
 }
 
+static int  ft_create_philosophers(t_data *data)
+{
+    int i;
+    int error;
+
+    data->philosophers = malloc(sizeof(t_philosopher *) * data->attr.nb_philosophers);
+    if (!data->philosophers)
+        return (0);
+    i = -1;
+    while (++i < data->attr.nb_philosophers)
+    {
+        data->philosophers[i] = ft_philosopher_create(i, data, &error);
+        if (error)
+        {
+            ft_philosopher_nclear(data->philosophers, i);
+            return (error);
+        }
+    }
+    return (0);
+}
+
 t_data *ft_getdata(int argc, char **argv, int *error)
 {
     t_data *data;
@@ -46,16 +67,13 @@ t_data *ft_getdata(int argc, char **argv, int *error)
     *error = EMAF;
     data =  malloc(sizeof(t_data));
     if (!data)
-        return (data);
-    data->philosophers = 0;
-    data->attr = malloc(sizeof(t_attr));
-    if (!data->attr)
-        return (data);
-    *error = ft_getattr(data->attr, argc, argv);
+        return (0);
+    *error = ft_getattr(&(data->attr), argc, argv);
     if (*error)
         return (data);
-    data->philosophers = malloc(sizeof(t_philosopher) * data->attr->nb_philosophers);
-    if (!data->philosophers)
-        *error = EMAF;
+    *error = ft_create_datasem(data);
+    if (*error)
+        return (data);
+    *error = ft_create_philosophers(data);
     return (data);
 }

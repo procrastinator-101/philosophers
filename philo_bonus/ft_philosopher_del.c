@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_destroy_data.c                                  :+:      :+:    :+:   */
+/*   ft_philosopher_del.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/25 22:11:10 by youness           #+#    #+#             */
-/*   Updated: 2021/09/25 22:11:12 by youness          ###   ########.fr       */
+/*   Created: 2021/09/30 00:44:18 by youness           #+#    #+#             */
+/*   Updated: 2021/09/30 00:44:19 by youness          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    ft_destroy_data(t_data *data)
+void    ft_philosopher_del(t_philosopher *philosopher)
 {
-    if (!data)
-        return ;
-    free(data->philosophers);
-    free(data);
+    ft_semdel(&(philosopher->lock));
+    ft_semdel(&(philosopher->status_lock));
+    free(philosopher);
 }

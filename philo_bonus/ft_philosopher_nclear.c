@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_destroy_data.c                                  :+:      :+:    :+:   */
+/*   ft_philosopher_nclear.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/25 22:11:10 by youness           #+#    #+#             */
-/*   Updated: 2021/09/25 22:11:12 by youness          ###   ########.fr       */
+/*   Created: 2021/09/30 00:44:33 by youness           #+#    #+#             */
+/*   Updated: 2021/09/30 00:44:36 by youness          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    ft_destroy_data(t_data *data)
+void    ft_philosopher_nclear(t_philosopher **philosophers, int n)
 {
-    if (!data)
-        return ;
-    free(data->philosophers);
-    free(data);
+    int i;
+
+    i = -1;
+    while (++i < n)
+        ft_philosopher_del(philosophers[i]);
+    free(philosophers);
 }
