@@ -14,26 +14,16 @@
 
 static int  ft_getpartner(t_data *data, int nb)
 {
-    if (data->attr->nb_philosophers == 1)
-    {
-        ft_status_print(data, nb, data->time_begin, DIED);
-        exit(END_DEAD);
-    }
     return ((nb + 1) % data->attr->nb_philosophers);
-}
-
-static void ft_take_forks(t_data *data, int nb, int partner)
-{
-    sem_wait(data->philosophers[nb].lock.key);
-    ft_status_print(data, nb, data->time_begin, "has taken a fork");
-    sem_wait(data->philosophers[partner].lock.key);
-    ft_status_print(data, nb, data->time_begin, "has taken a fork");
 }
 
 static void ft_eat(t_data *data, int nb, int partner)
 {
-    ft_take_forks(data, nb, partner);
+    sem_wait(data->philosophers[nb].lock.key);
+    ft_status_print(data, nb, data->time_begin, "has taken a fork");
+    sem_wait(data->philosophers[partner].lock.key);
     sem_wait(data->philosophers[nb].status_lock.key);
+    ft_status_print(data, nb, data->time_begin, "has taken a fork");
     data->philosophers[nb].iseating = 1;
     gettimeofday(&(data->philosophers[nb].last_meal), 0);
     sem_post(data->philosophers[nb].status_lock.key);

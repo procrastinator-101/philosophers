@@ -34,7 +34,7 @@ void    ft_supervise_philosopher(t_data *data, int nb)
             exit(END_DEAD);
         }
         sem_post(data->philosophers[nb].status_lock.key);
-        ft_usleep(1000);
+        //ft_usleep(1000);
     }
 }
 
@@ -47,6 +47,7 @@ void    ft_runchild(t_data *data, int idx)
         ft_status_print(data, idx, data->time_begin, DIED);
         exit(END_DEAD);
     }
+    gettimeofday(&(data->time_begin), 0);
     ret = pthread_create(&(data->philosophers[idx].tid), 0, ft_simulate, data->philosophers + idx);
     if (ret)
     {
@@ -64,7 +65,7 @@ static int  ft_create_childs(t_data *data, int idx)
         return (EPCF);
     if (data->philosophers[idx].pid)
         return (0);
-    
+    ft_runchild(data, idx);
     return (0);
 }
 

@@ -27,6 +27,18 @@ static void ft_update_child_status(t_data *data, int pid)
     }
 }
 
+static void ft_kill_alive_childs(t_data *data)
+{
+    int i;
+
+     i = -1;
+    while (++i < data->attr->nb_philosophers)
+    {
+        if (data->philosophers[i].alive)
+            kill(data->philosophers[i].pid, SIGKILL);
+    }
+}
+
 void    ft_supervise_simulation(t_data *data)
 {
     int ret;
@@ -44,13 +56,13 @@ void    ft_supervise_simulation(t_data *data)
             ret =  WEXITSTATUS(status);
             if (ret == END_DEAD || ret == END_ERROR)
             {
-                ft_kill_alive_childs(data, pid);
+                ft_kill_alive_childs(data);
                 break ;
             }
         }
         else if (WIFSIGNALED(status))
         {
-            ft_kill_alive_childs(data, pid);
+            ft_kill_alive_childs(data);
             break ;
         }
     }

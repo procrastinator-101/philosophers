@@ -12,6 +12,22 @@
 
 #include "philo.h"
 
+static void ft_initialise_philosophers(t_data *data)
+{
+    int     i;
+
+    i = -1;
+    while (++i < data->attr->nb_philosophers)
+    {
+        data->philosophers[i].nb = i;
+        data->philosophers[i].pid = -1;
+        data->philosophers[i].alive = 1;
+        data->philosophers[i].data = data;
+        data->philosophers[i].iseating = 1;
+        data->philosophers[i].nb_meals = 0;
+    }
+}
+
 int ft_prepare_simulation(t_data **data, int argc, char **argv)
 {
     int     error;
@@ -32,6 +48,6 @@ int ft_prepare_simulation(t_data **data, int argc, char **argv)
         ft_destroy_data(*data);
         return (error);
     }
-    (*data)->isdead = 0;
+    ft_initialise_philosophers(*data);
     return (0);
 }

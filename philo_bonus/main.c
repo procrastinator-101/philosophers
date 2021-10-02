@@ -14,7 +14,6 @@
 
 int main(int argc, char **argv)
 {
-    int     i;
     int     error;
     t_data  *data;
 
@@ -31,7 +30,6 @@ int main(int argc, char **argv)
         ft_manage_error(error);
         return (EXIT_FAILURE);
     }
-    ft_semclear(data, 1,  data->attr->nb_philosophers,  data->attr->nb_philosophers);
-    
+    ft_supervise_simulation(data);
     return (EXIT_SUCCESS);
 }

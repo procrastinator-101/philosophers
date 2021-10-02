@@ -121,6 +121,12 @@ void    ft_semclear(t_data *data, int major, int locks, int status_locks);
 int     ft_semcreate(t_semaphore *semaphore, char *type, int id, int value);
 
 void    ft_supervise_philosopher(t_data *data, int nb);
+void    ft_supervise_simulation(t_data *data);
+
+char	*ft_itoa(int n);
+char	*ft_strdup(const char *s1);
+char	*ft_strjoin(char const *s1, char const *s2);
+
 
 /*-----------------------------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------------------------*/

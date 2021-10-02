@@ -45,19 +45,17 @@ static int  ft_take_forks(t_data *data, int nb, int partner)
         pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
         return (0);
     }
+    data->philosophers[nb].iseating = 1;
+    gettimeofday(&(data->philosophers[nb].last_meal), 0);
     pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
     ft_status_print(data, nb, data->time_begin, "has taken a fork");
     return (1);
 }
 
-static void ft_eat(t_data *data, int nb, int partner)
+static int  ft_eat(t_data *data, int nb, int partner)
 {
     if (!ft_take_forks(data, nb, partner))
-        return ;
-    pthread_mutex_lock(&(data->philosophers[nb].status_lock));
-    data->philosophers[nb].iseating = 1;
-    gettimeofday(&(data->philosophers[nb].last_meal), 0);
-    pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+        return (0);
     ft_status_print(data, nb, data->time_begin, "is eating");
     ft_usleep(data->attr->time_to_eat * 1000);
     pthread_mutex_unlock(&(data->philosophers[nb].lock));
@@ -66,15 +64,22 @@ static void ft_eat(t_data *data, int nb, int partner)
     data->philosophers[nb].iseating = 0;
     data->philosophers[nb].nb_meals++;
     pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+    return (1);
 }
 
 static void  ft_dine(t_data *data, int nb, int partner)
 {
-    while (!data->isdead)
+    while (data->attr->nb_meals < 0 || data->philosophers[nb].nb_meals < data->attr->nb_meals)
     {
-        if (data->attr->nb_meals >= 0 && data->philosophers[nb].nb_meals >= data->attr->nb_meals)
+        pthread_mutex_lock(&(data->philosophers[nb].status_lock));
+        if (data->isdead)
+        {
+            pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
             return ;
-        ft_eat(data, nb, partner);
+        }
+        pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
+        if (!ft_eat(data, nb, partner))
+            return ;
         ft_status_print(data, nb, data->time_begin, "is sleeping");
         ft_usleep(data->attr->time_to_sleep * 1000);
         pthread_mutex_lock(&(data->philosophers[nb].status_lock));
@@ -83,8 +88,8 @@ static void  ft_dine(t_data *data, int nb, int partner)
             pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
             return ;
         }
-        pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
         ft_status_print(data, nb, data->time_begin, "is thinking");
+        pthread_mutex_unlock(&(data->philosophers[nb].status_lock));
     }
 }
 
