@@ -22,9 +22,8 @@ void    ft_semclear(t_data *data, int major, int locks, int status_locks)
        ft_semdel(&(data->display_lock));
     }
     i = -1;
-    while (++i < locks)
-        ft_semdel(&(data->philosophers[i].lock));
-    i = -1;
     while (++i < status_locks)
         ft_semdel(&(data->philosophers[i].status_lock));
+    if (locks)
+        return ;
 }

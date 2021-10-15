@@ -12,16 +12,11 @@
 
 #include "philo.h"
 
-static int  ft_getpartner(t_data *data, int nb)
+static void ft_eat(t_data *data, int nb)
 {
-    return ((nb + 1) % data->attr->nb_philosophers);
-}
-
-static void ft_eat(t_data *data, int nb, int partner)
-{
-    sem_wait(data->philosophers[nb].lock.key);
+    sem_wait(data->lock.key);
     ft_status_print(data, nb, data->time_begin, "has taken a fork");
-    sem_wait(data->philosophers[partner].lock.key);
+    sem_wait(data->lock.key);
     sem_wait(data->philosophers[nb].status_lock.key);
     ft_status_print(data, nb, data->time_begin, "has taken a fork");
     data->philosophers[nb].iseating = 1;
@@ -29,41 +24,43 @@ static void ft_eat(t_data *data, int nb, int partner)
     sem_post(data->philosophers[nb].status_lock.key);
     ft_status_print(data, nb, data->time_begin, "is eating");
     ft_usleep(data->attr->time_to_eat * 1000);
-    sem_post(data->philosophers[nb].lock.key);
-    sem_post(data->philosophers[partner].lock.key);
+    sem_post(data->lock.key);
+    sem_post(data->lock.key);
     sem_wait(data->philosophers[nb].status_lock.key);
     data->philosophers[nb].iseating = 0;
     data->philosophers[nb].nb_meals++;
     sem_post(data->philosophers[nb].status_lock.key);
 }
 
-static void  ft_dine(t_data *data, int nb, int partner)
+static void  ft_dine(t_data *data, int nb)
 {
     while (data->attr->nb_meals < 0 || data->philosophers[nb].nb_meals < data->attr->nb_meals)
     {
-        ft_eat(data, nb, partner);
+        ft_eat(data, nb);
+        sem_wait(data->philosophers[nb].status_lock.key);
         ft_status_print(data, nb, data->time_begin, "is sleeping");
+        sem_post(data->philosophers[nb].status_lock.key);
         ft_usleep(data->attr->time_to_sleep * 1000);
+        sem_wait(data->philosophers[nb].status_lock.key);
         ft_status_print(data, nb, data->time_begin, "is thinking");
+        sem_post(data->philosophers[nb].status_lock.key);
     }
 }
 
 void    *ft_simulate(void *arg)
 {
     int         nb;
-    int         partner;
     t_data      *data;
 
     data = ((t_philosopher *)arg)->data;
     nb = ((t_philosopher *)arg)->nb;
     pthread_detach(data->philosophers[nb].tid);
-    partner = ft_getpartner(data, nb);
     sem_wait(data->philosophers[nb].status_lock.key);
     data->philosophers[nb].iseating = 0;
     gettimeofday(&(data->philosophers[nb].last_meal), 0);
     sem_post(data->philosophers[nb].status_lock.key);
     if (nb % 2)
         ft_usleep(SETUP_TIME);
-    ft_dine(data, nb, partner);
+    ft_dine(data, nb);
     return (0);
 }

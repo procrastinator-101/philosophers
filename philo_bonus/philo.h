@@ -37,7 +37,7 @@
 # define EPCF   7       //ERROR PROCESS CREATION FAILURE
 
 # define MAX_USLEEP 1000000
-# define SETUP_TIME 10000
+# define SETUP_TIME 50000
 
 /*
 # define M1 0X1
@@ -78,7 +78,6 @@ typedef struct s_philosopher
     pthread_t       tid;
     void            *data;
     t_timeval       last_meal;
-    t_semaphore     lock;
     t_semaphore     status_lock;
 }                   t_philosopher;
 
