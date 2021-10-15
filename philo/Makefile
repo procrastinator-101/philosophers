@@ -13,7 +13,7 @@
 AUTHOR = younes
 
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -pthread -fsanitize=address
+CFLAGS = -Wall -Werror -Wextra -pthread #-fsanitize=address
 
 NAME = philo
 
