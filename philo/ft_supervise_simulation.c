@@ -23,7 +23,6 @@ static int	ft_check_death(t_data *data, int nb, int *isfull)
 				ft_gettimestamp(data->philosophers[nb].last_meal) >= \
 				(long)data->attr->time_to_die)
 		{
-			data->isdead = 1;
 			ft_status_print(data, nb, data->time_begin, DIED);
 			return (1);
 		}

@@ -15,6 +15,10 @@
 void	ft_status_print(t_data *data, int nb, t_timeval start, char *action)
 {
 	pthread_mutex_lock(&(data->display_lock));
-	printf("%ld  philosopher %d  %s\n", ft_gettimestamp(start), nb + 1, action);
+	if (!data->isdead)
+		printf("%ld  philosopher %d  %s\n", ft_gettimestamp(start), nb + 1, \
+			action);
+	if (!ft_strcmp(action, DIED))
+		data->isdead = 1;
 	pthread_mutex_unlock(&(data->display_lock));
 }

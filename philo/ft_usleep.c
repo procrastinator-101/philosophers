@@ -31,5 +31,5 @@ void	ft_usleep(useconds_t usec)
 	if (usec > 0)
 		usleep(usec);
 	while (ft_gettimestamp(start) < (long)msec)
-		;
+		usleep(RESTTIME);
 }

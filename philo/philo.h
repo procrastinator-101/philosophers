@@ -31,6 +31,7 @@
 # define MAX_USLEEP 1000000
 # define SETUP_TIME 10000
 # define MARGIN     20
+# define RESTTIME	100
 
 # define DIED   "\t\t\t\t\tdied" //to modify
 
