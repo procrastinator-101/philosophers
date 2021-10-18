@@ -6,7 +6,7 @@
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:25:00 by youness           #+#    #+#             */
-/*   Updated: 2021/10/18 15:01:16 by yarroubi         ###   ########.fr       */
+/*   Updated: 2021/10/18 16:22:21 by yarroubi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <limits.h>
 
 # include <pthread.h>
 # include <sys/time.h>
@@ -112,8 +113,7 @@ void			ft_cleanup(t_data *data);
 void			ft_destroy_data(t_data *data);
 
 void			ft_semdel(t_semaphore *semaphore);
-void			ft_semclear(t_data *data, int major, int locks, \
-				int status_locks);
+void			ft_semclear(t_data *data, int major, int status_locks);
 int				ft_semcreate(t_semaphore *semaphore, char *type, int id, \
 				int value);
 
@@ -131,6 +131,6 @@ void			ft_manage_error(int error);
 int				ft_strcmp(const char *s1, const char *s2);
 void			ft_usleep(useconds_t usec);
 void			ft_putstr_fd(char *s, int fd);
-unsigned int	ft_atou_check(const char *str, int *error);
+int				ft_atoi_check(const char *str, int *error);
 
 #endif

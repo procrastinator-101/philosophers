@@ -6,7 +6,7 @@
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 22:23:50 by youness           #+#    #+#             */
-/*   Updated: 2021/10/18 15:14:28 by yarroubi         ###   ########.fr       */
+/*   Updated: 2021/10/18 16:17:18 by yarroubi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ static char	*ft_getsemname(char *type, int id)
 	char	*name;
 
 	nb = ft_itoa(id);
+	if (!nb)
+		return (0);
 	name = ft_strjoin(type, nb);
 	free(nb);
 	return (name);

@@ -6,7 +6,7 @@
 #    By: youness <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/21 18:53:17 by youness           #+#    #+#              #
-#    Updated: 2021/09/30 18:23:28 by youness          ###   ########.fr        #
+#    Updated: 2021/10/18 16:08:31 by yarroubi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ CFLAGS = -Wall -Werror -Wextra -pthread #-fsanitize=address
 
 NAME = philo_bonus
 
-SRC = ft_atou_check.c \
+SRC = ft_atoi_check.c \
 	  ft_cleanup.c \
 	  ft_destroy_data.c \
 	  ft_getdata.c \

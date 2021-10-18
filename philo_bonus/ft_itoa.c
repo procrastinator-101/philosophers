@@ -6,7 +6,7 @@
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 18:14:24 by youness           #+#    #+#             */
-/*   Updated: 2021/10/18 15:19:19 by yarroubi         ###   ########.fr       */
+/*   Updated: 2021/10/18 16:15:47 by yarroubi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ char	*ft_itoa(int n)
 	ptr = malloc((len + 1) * sizeof(char));
 	if (!ptr)
 		return (ptr);
+	ptr[0] = '0';
 	ptr[len] = 0;
 	if (n < 0)
 		ptr[0] = '-';

@@ -6,7 +6,7 @@
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/26 18:46:09 by youness           #+#    #+#             */
-/*   Updated: 2021/10/18 15:19:49 by yarroubi         ###   ########.fr       */
+/*   Updated: 2021/10/18 16:21:49 by yarroubi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	ft_initialise_status_locks(t_data *data)
 		ret = ft_semcreate(&(data->philosophers[i].status_lock), PSLOCK, i, 1);
 		if (ret)
 		{
-			ft_semclear(data, 1, data->attr->nb_philosophers, i);
+			ft_semclear(data, 1, i);
 			return (ret);
 		}
 	}
