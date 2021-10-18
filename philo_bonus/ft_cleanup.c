@@ -6,17 +6,17 @@
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/25 21:51:23 by youness           #+#    #+#             */
-/*   Updated: 2021/09/25 21:51:24 by youness          ###   ########.fr       */
+/*   Updated: 2021/10/18 15:20:23 by yarroubi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    ft_cleanup(t_data *data)
+void	ft_cleanup(t_data *data)
 {
-    int nb;
+	int	nb;
 
-    nb = data->attr->nb_philosophers;
-    ft_semclear(data, 1, nb, nb);
-    ft_destroy_data(data);
+	nb = data->attr->nb_philosophers;
+	ft_semclear(data, 1, nb, nb);
+	ft_destroy_data(data);
 }

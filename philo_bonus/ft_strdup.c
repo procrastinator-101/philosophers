@@ -6,7 +6,7 @@
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/30 18:25:20 by youness           #+#    #+#             */
-/*   Updated: 2021/09/30 18:25:24 by youness          ###   ########.fr       */
+/*   Updated: 2021/10/18 15:11:52 by yarroubi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 char	*ft_strdup(const char *s1)
 {
-	char	*ptr;
 	int		i;
+	char	*ptr;
 
 	i = 0;
 	while (s1[i])

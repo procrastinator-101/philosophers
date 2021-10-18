@@ -6,7 +6,7 @@
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/21 18:23:58 by youness           #+#    #+#             */
-/*   Updated: 2021/10/18 12:43:58 by youness          ###   ########.fr       */
+/*   Updated: 2021/10/18 15:09:31 by yarroubi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,6 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 	ft_supervise_simulation(data);
+	ft_cleanup(data);
 	return (EXIT_SUCCESS);
 }
