@@ -63,6 +63,8 @@ static void	ft_dine(t_data *data, int nb, int partner)
 		data->philosophers[nb].nb_meals < data->attr->nb_meals))
 	{
 		ft_eat(data, nb, partner);
+		if (data->isdead)
+			return ;
 		ft_status_print(data, nb, data->time_begin, "is sleeping");
 		ft_usleep(data->attr->time_to_sleep * 1000);
 		ft_status_print(data, nb, data->time_begin, "is thinking");

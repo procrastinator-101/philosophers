@@ -17,7 +17,7 @@ CFLAGS = -Wall -Werror -Wextra -pthread #-fsanitize=address
 
 NAME = philo
 
-SRC = ft_atou_check.c \
+SRC = ft_atoi_check.c \
 	  ft_cleanup.c \
 	  ft_destroy_data.c \
 	  ft_getdata.c \

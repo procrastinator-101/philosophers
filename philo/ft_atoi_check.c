@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atou_check.c                                    :+:      :+:    :+:   */
+/*   ft_atoi_check.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-unsigned int	ft_atou_check(const char *str, int *error)
+int	ft_atoi_check(const char *str, int *error)
 {
-	int				i;
-	unsigned int	ret;
+	int			i;
+	long int	ret;
 
 	i = 0;
 	*error = 0;
@@ -24,9 +24,9 @@ unsigned int	ft_atou_check(const char *str, int *error)
 	if (str[i] == '+')
 		i++;
 	ret = 0;
-	while (str[i] > 47 && str[i] < 58)
+	while (str[i] > 47 && str[i] < 58 && ret < (long)INT_MAX)
 		ret = ret * 10 + (str[i++] - 48);
-	if (str[i])
+	if (str[i] || ret > (long)INT_MAX)
 		*error = EIARG;
 	return (ret);
 }

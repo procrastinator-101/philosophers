@@ -22,15 +22,15 @@ static int	ft_getattr(t_attr *attr, int argc, char **argv)
 	while (++i < argc)
 	{
 		if (i == 1)
-			attr->nb_philosophers = ft_atou_check(argv[i], &error);
+			attr->nb_philosophers = ft_atoi_check(argv[i], &error);
 		else if (i == 2)
-			attr->time_to_die = ft_atou_check(argv[i], &error);
+			attr->time_to_die = ft_atoi_check(argv[i], &error);
 		else if (i == 3)
-			attr->time_to_eat = ft_atou_check(argv[i], &error);
+			attr->time_to_eat = ft_atoi_check(argv[i], &error);
 		else if (i == 4)
-			attr->time_to_sleep = ft_atou_check(argv[i], &error);
+			attr->time_to_sleep = ft_atoi_check(argv[i], &error);
 		else if (i == 5)
-			attr->nb_meals = ft_atou_check(argv[i], &error);
+			attr->nb_meals = ft_atoi_check(argv[i], &error);
 		if (error)
 			return (error);
 	}

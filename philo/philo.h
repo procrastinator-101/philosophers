@@ -18,6 +18,7 @@
 # include <stdlib.h>
 
 # include <sys/time.h>
+# include <limits.h>
 
 # include <pthread.h>
 
@@ -96,6 +97,6 @@ int				ft_strcmp(const char *s1, const char *s2);
 void			ft_usleep(useconds_t usec);
 void			ft_putstr_fd(char *s, int fd);
 long			ft_gettimestamp(t_timeval start);
-unsigned int	ft_atou_check(const char *str, int *error);
+int				ft_atoi_check(const char *str, int *error);
 
 #endif
