@@ -6,25 +6,48 @@
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/25 16:18:14 by youness           #+#    #+#             */
-/*   Updated: 2021/10/17 19:45:29 by yarroubi         ###   ########.fr       */
+/*   Updated: 2021/09/25 16:18:16 by youness          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_prepare_simulation(t_data **data, int argc, char **argv)
+static void ft_initialise_philosophers(t_data *data)
 {
-	int	error;
+    int     i;
 
-	if (argc < 5)
-		return (EMARG);
-	if (argc > 6)
-		return (ETAC);
-	*data = ft_getdata(argc, argv, &error);
-	if (error)
-	{
-		free(*data);
-		return (error);
-	}
-	return (0);
+    i = -1;
+    while (++i < data->attr->nb_philosophers)
+    {
+        data->philosophers[i].nb = i;
+        data->philosophers[i].pid = -1;
+        data->philosophers[i].alive = 1;
+        data->philosophers[i].data = data;
+        data->philosophers[i].iseating = 1;
+        data->philosophers[i].nb_meals = 0;
+    }
+}
+
+int ft_prepare_simulation(t_data **data, int argc, char **argv)
+{
+    int     error;
+
+    if (argc < 5)
+        return (EMARG);
+    if (argc > 6)
+        return (ETAC);
+    *data = ft_getdata(argc, argv, &error);
+    if (error)
+    {
+        ft_destroy_data(*data);
+        return (error);
+    }
+    error = ft_initialise_locks(*data);
+    if (error)
+    {
+        ft_destroy_data(*data);
+        return (error);
+    }
+    ft_initialise_philosophers(*data);
+    return (0);
 }

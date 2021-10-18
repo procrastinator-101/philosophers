@@ -1,20 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_philosopher_del.c                               :+:      :+:    :+:   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youness <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/30 00:44:18 by youness           #+#    #+#             */
-/*   Updated: 2021/10/17 19:45:48 by yarroubi         ###   ########.fr       */
+/*   Created: 2021/09/30 18:14:24 by youness           #+#    #+#             */
+/*   Updated: 2021/09/30 18:14:26 by youness          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_philosopher_del(t_philosopher *philosopher)
+static int	ft_getlen(int n)
 {
-	ft_semdel(&(philosopher->lock));
-	ft_semdel(&(philosopher->status_lock));
-	free(philosopher);
+	int	ret;
+
+	ret = 1;
+	while (n / 10)
+	{
+		ret++;
+		n /= 10;
+	}
+	return (ret);
+}
+
+char	*ft_itoa(int n)
+{
+	int		len;
+	char	*ptr;
+
+	len = ft_getlen(n) + (n < 0);
+	ptr = malloc((len + 1) * sizeof(char));
+	if (!ptr)
+		return (ptr);
+	ptr[len] = 0;
+	if (n < 0)
+		ptr[0] = '-';
+	while (n)
+	{
+		len--;
+		if (n < 0)
+			ptr[len] = -(n % 10) + '0';
+		else
+			ptr[len] = n % 10 + '0';
+		n /= 10;
+	}
+	return (ptr);
 }
